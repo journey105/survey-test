@@ -246,7 +246,6 @@ textarea.ti{min-height:90px;resize:vertical;}
     <div style="clear:both;"></div>
     <div id="modalThumb" style="margin-top:6px;"></div>
     <div id="modalPills" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;"></div>
-    <div style="font-size:11.5px;color:#aaa;margin-top:12px;line-height:1.6;">실제 서베이에선 전체 화면 미리보기가 표시됩니다. (페이지 주소는 공개되지 않아요)</div>
   </div>
 </div>
 
@@ -300,7 +299,9 @@ function buildRefs(){
   REFS.forEach(function(r,i){
     var c=document.createElement('div'); c.className='refc';
     var pills=r.pills.map(function(p){return '<span class="pill '+p[1]+'">'+p[0]+'</span>';}).join('');
-    c.innerHTML='<div style="height:84px;border-radius:9px;overflow:hidden;border:0.5px solid #eee;background:#f3f3f1;"><img src="https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=600" style="width:100%;height:100%;object-fit:cover;object-position:top;" loading="lazy"></div><div style="font-size:12px;color:#999;margin:8px 0 6px;">'+r.title+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+pills+'</div><button class="detail-btn">자세히 보기</button>';
+    var thumbSrc=r.img?encodeURI(r.img):'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=600';
+    var thumbFb='https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=600';
+    c.innerHTML='<div style="height:84px;border-radius:9px;overflow:hidden;border:0.5px solid #eee;background:#f3f3f1;"><img src="'+thumbSrc+'" onerror="this.onerror=null;this.src=\''+thumbFb+'\'" style="width:100%;height:100%;object-fit:cover;object-position:top;" loading="lazy"></div><div style="font-size:12px;color:#999;margin:8px 0 6px;">'+r.title+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+pills+'</div><button class="detail-btn">자세히 보기</button>';
     c.onclick=function(){ A.refPick=(A.refPick===i?null:i); [].forEach.call(g.children,function(x,j){x.classList.toggle('sel',A.refPick===j);}); };
     c.querySelector('.detail-btn').onclick=function(e){ e.stopPropagation(); openModal(i); };
     g.appendChild(c);
@@ -379,7 +380,7 @@ function buildColor(){
   document.querySelectorAll('.role').forEach(function(el){ el.onclick=function(){ A._active=el.dataset.r; renderColor(); }; });
   $('hexInBg').oninput=function(){ var v=norm($('hexInBg').value); if(v){A.color.bg=v;renderColor();} };
   $('hexInPoint').oninput=function(){ var v=norm($('hexInPoint').value); if(v){A.color.point=v;renderColor();} };
-  $('colTrust').onchange=function(){ A.colorTrust=$('colTrust').checked; renderColor(); updateNav(); };
+  $('colTrust').onchange=function(){ A.colorTrust=$('colTrust').checked; if(A.colorTrust){A.color.bg=null;A.color.point=null;A._active='bg';} renderColor(); updateNav(); };
   A._active='bg';
 }
 function norm(v){ v=v.trim(); if(v&&v[0]!=='#')v='#'+v; return /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(v)?v:null; }
@@ -449,7 +450,8 @@ function next(){
 function prev(){ if(cur>0) showScreen(cur-1); }
 
 function buildSummary(){
-  var refLabel=A.refPick!=null?REFS[A.refPick].title:(A.refUrl?A.refUrl:'없음/자유');
+  var refLabel=A.refPick!=null?(REFS[A.refPick].title+' ('+REFS[A.refPick].url+')'):(A.refUrl?A.refUrl:'없음/자유');
+  if(A.refPick!=null&&A.refUrl) refLabel+=' / 추가 레퍼런스: '+A.refUrl;
   var look=A.lookTrust?'디자이너에게 맡김':(A.look.size?Array.from(A.look).map(function(id){return LOOKS.find(function(l){return l.id===id;}).lab;}).join(' · '):'-');
   if(A.lookDirect) look+=(A.look.size?' / 설명: ':'설명: ')+A.lookDirect;
   var col=A.colorTrust?'디자이너 제안':('배경 '+(A.color.bg||'-')+' · 포인트 '+(A.color.point||'-'));
