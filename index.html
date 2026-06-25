@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채용홈페이지 제작 서베이 2.0 (시안)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f7f7f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;color:#1a1a1a;}
+#app{max-width:720px;margin:0 auto;padding:1.4rem 1.1rem 3rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.brand{font-size:13px;font-weight:600;color:#555;display:flex;align-items:center;gap:7px;}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:#4f8ef7;}
+.step-tag{font-size:11px;color:#888;background:#fff;border:1px solid #e5e5e5;border-radius:99px;padding:3px 10px;font-weight:500;}
+.prog-track{height:3px;background:#e5e5e5;border-radius:99px;overflow:hidden;margin-bottom:1.6rem;}
+.prog-fill{height:100%;background:#4f8ef7;border-radius:99px;transition:width .4s ease;width:0;}
+.scr{display:none;animation:up .25s ease;}
+.scr.active{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+h2.q{font-size:20px;font-weight:700;line-height:1.4;margin-bottom:5px;}
+.q-sub{font-size:14px;color:#777;margin-bottom:1.3rem;line-height:1.6;}
+.counter{font-size:12px;font-weight:600;padding:3px 11px;border-radius:99px;}
+.counter.blue{color:#2a5bd7;background:#eef3ff;} .counter.red{color:#b42318;background:#fee4e2;}
+label.fl{display:block;font-size:13px;font-weight:600;color:#444;margin:0 0 6px 2px;}
+input.ti,textarea.ti{width:100%;padding:12px 14px;font-size:15px;font-family:inherit;border-radius:12px;border:1.5px solid #e0e0e0;background:#fff;outline:none;transition:border-color .15s;margin-bottom:1.1rem;}
+input.ti:focus,textarea.ti:focus{border-color:#4f8ef7;}
+textarea.ti{min-height:90px;resize:vertical;}
+.card{background:#fff;border:1px solid #e8e8e8;border-radius:14px;padding:1rem 1.2rem;margin-bottom:.8rem;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.ai-card{background:#eef3ff;border:1px solid #c5d5f5;border-radius:14px;padding:1rem 1.2rem;font-size:13.5px;color:#2c3a6e;line-height:1.75;margin-bottom:.8rem;}
+.notice-pc{background:#fff8f0;border:1px solid #ffd9b8;border-radius:10px;padding:10px 13px;font-size:12.5px;color:#9a4a08;line-height:1.6;margin-bottom:1rem;}
+.callout-red{background:#fff5f5;border:1px solid #fbcaca;border-radius:12px;padding:13px 15px;font-size:12.5px;color:#9b2c2c;line-height:1.85;margin:0 0 1.1rem;}
+.callout-info{background:#f4f7fb;border:1px solid #d5e0ee;border-radius:12px;padding:14px 16px;font-size:13px;color:#3a4a63;line-height:1.85;margin-top:1.1rem;text-align:left;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{cursor:pointer;font-size:14px;padding:9px 15px;border-radius:99px;border:1.5px solid #d8dbe0;background:#fff;color:#333;font-weight:500;transition:all .12s;user-select:none;}
+.chip:hover{border-color:#4f8ef7;}
+.chip.pro{background:#4f8ef7;border-color:#4f8ef7;color:#fff;}
+.chip.con{background:#ef4444;border-color:#ef4444;color:#fff;}
+.chip.lock{opacity:.5;pointer-events:none;background:#eef3ff;border-color:#bcd0f5;color:#2a5bd7;}
+.chip.dis{opacity:.32;pointer-events:none;}
+.chip .tag{font-size:10px;opacity:.85;margin-left:5px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.lc{cursor:pointer;border:1.5px solid #e3e3e3;border-radius:14px;padding:10px;background:#fff;position:relative;transition:all .12s;}
+.lc:hover{border-color:#b9cdf5;}
+.lc.sel{border-color:#4f8ef7;border-width:2px;padding:9px;}
+.lc.sel .lc-lab{color:#2a5bd7;}
+.lc.dis{opacity:.32;pointer-events:none;}
+.lc-lab{text-align:center;font-size:13px;margin-top:8px;font-weight:500;}
+.lc .chk{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:#4f8ef7;color:#fff;font-size:11px;display:none;align-items:center;justify-content:center;}
+.lc.sel .chk{display:flex;}
+.scrn{height:62px;border-radius:9px;overflow:hidden;}
+.special{cursor:pointer;border:1.5px dashed #c9ccd2;border-radius:12px;background:#fff;padding:11px 16px;font-size:13px;font-weight:500;color:#777;}
+.special.on{border-style:solid;border-color:#4f8ef7;color:#2a5bd7;background:#eef3ff;}
+.pill{font-size:12px;padding:3px 9px;border-radius:99px;font-weight:500;}
+.p-gray{background:#eceae4;color:#5f5e5a;} .p-blue{background:#e6f1fb;color:#0c447c;}
+.p-green{background:#eaf3de;color:#27500a;} .p-amber{background:#faeeda;color:#633806;}
+.p-red{background:#fcebeb;color:#791f1f;} .p-orange{background:#faece7;color:#712b13;}
+.p-pink{background:#fbeaf0;color:#72243e;} .p-purple{background:#eeedfe;color:#3c3489;}
+.refc{border:1.5px solid #e3e3e3;border-radius:14px;padding:10px;cursor:pointer;background:#fff;transition:all .12s;}
+.refc:hover{border-color:#b9cdf5;}
+.refc.sel{border-color:#4f8ef7;border-width:2px;padding:9px;}
+.detail-btn{margin-top:9px;width:100%;padding:6px;border-radius:8px;border:1px solid #e0e0e0;background:#fafafa;font-size:12px;color:#666;cursor:pointer;font-family:inherit;}
+.detail-btn:hover{border-color:#4f8ef7;color:#2a5bd7;}
+.role{cursor:pointer;display:flex;align-items:center;gap:8px;border:1.5px solid #d8dbe0;border-radius:10px;padding:9px 12px;background:#fff;flex:1;min-width:130px;}
+.role.active{border-color:#4f8ef7;border-width:2px;}
+.role .dot{width:18px;height:18px;border-radius:5px;border:0.5px solid #ddd;flex-shrink:0;}
+.role .rn{font-size:13px;font-weight:600;} .role .rh{font-size:11px;color:#aaa;font-family:monospace;}
+.sw{width:32px;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;box-sizing:border-box;}
+.sw.sel{border-color:#4f8ef7;box-shadow:0 0 0 2px #eef3ff;}
+.hexrow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.hexrow label{font-size:12px;color:#666;width:46px;}
+.hexin{width:130px;font-size:13px;font-family:monospace;padding:8px 10px;border-radius:8px;border:1.5px solid #e0e0e0;outline:none;}
+.optbtn{display:block;width:100%;text-align:left;padding:13px 16px;border-radius:12px;border:1.5px solid #e0e0e0;background:#fff;font-size:14.5px;color:#333;cursor:pointer;margin-bottom:9px;transition:all .12s;font-family:inherit;}
+.optbtn:hover{border-color:#4f8ef7;}
+.optbtn.sel{border-color:#4f8ef7;background:#eef3ff;color:#2a5bd7;font-weight:600;}
+#nav{display:flex;gap:10px;margin-top:1.8rem;}
+.btn{flex:1;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.btn-prev{flex:0 0 84px;background:#fff;border:1.5px solid #e0e0e0;color:#666;font-weight:600;}
+.btn-next{background:#4f8ef7;color:#fff;}
+.btn-next:disabled{opacity:.32;cursor:not-allowed;}
+.done{text-align:center;padding:1.5rem 0;}
+.done-ic{width:56px;height:56px;border-radius:50%;background:#e6f4ea;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:26px;}
+.summary{text-align:left;background:#fff;border:1px solid #e8e8e8;border-radius:14px;padding:16px 18px;margin-top:1.2rem;font-size:13.5px;line-height:2;}
+.summary b{color:#2a5bd7;}
+.copy-btn{margin-top:12px;width:100%;padding:12px;border-radius:12px;border:1.5px solid #4f8ef7;background:#fff;color:#2a5bd7;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;}
+.save-note{font-size:12.5px;color:#888;margin-top:9px;line-height:1.6;}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:1rem;}
+.modal-ov.on{display:flex;}
+.modal-box{background:#fff;border-radius:16px;padding:16px;max-width:440px;width:100%;}
+.modal-box .scrn{height:210px;}
+.modal-close{float:right;border:none;background:#f0f0f0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:15px;color:#666;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar"><div class="brand"><div class="brand-dot"></div>나인하이어</div><div class="step-tag" id="stag">시작</div></div>
+  <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+
+  <!-- 0 시작 -->
+  <section class="scr active" data-step="0">
+    <h2 class="q">채용홈페이지<br>제작 서베이</h2>
+    <div class="q-sub">디자인 톤앤매너와 일정을 확인하는 간단한 서베이예요. (예상 소요 5~10분)</div>
+    <div class="ai-card"><b>📣 서베이 안내</b><br><br>안녕하세요. <b>채용홈페이지 제작 서베이</b>입니다.<br>채용홈페이지의 본격적인 제작에 앞서, 디자인 톤앤매너와 일정을 확인하는 간단한 서베이예요.<br><br>더 구체적인 디자인 가이드나 레퍼런스 이미지가 있다면 이후 전달드릴 <b>콘텐츠 작성 폼</b>에 함께 첨부해주세요. 담당 디자이너가 꼼꼼히 확인합니다 😊</div>
+    <div class="notice-pc">🖥️ 컬러·예시 선택이 많아, <b>PC(데스크톱)에서 진행</b>을 권장드려요.</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:.9rem;">📌 시작 전 확인사항</div>
+      <label style="display:flex;gap:9px;font-size:13px;color:#333;line-height:1.7;cursor:pointer;margin-bottom:12px;"><input type="checkbox" id="c1" style="margin-top:3px;flex-shrink:0;width:15px;height:15px;"> <span>콘텐츠 수령일로부터 약 <b>1개월</b> 제작 기간이 소요됩니다.</span></label>
+      <label style="display:flex;gap:9px;font-size:13px;color:#333;line-height:1.7;cursor:pointer;"><input type="checkbox" id="c2" style="margin-top:3px;flex-shrink:0;width:15px;height:15px;"> <span>디자인에 필요한 이미지는 고객사에서 직접 제공해주셔야 합니다. 간단한 디자인이나 스톡이미지 활용은 지원드리고 있으나, 브랜드 스타일에 맞는 <b>디자인 에셋·gif·모션그래픽 제작은 지원이 어렵습니다.</b></span></label>
+    </div>
+  </section>
+
+  <!-- 1 기본정보 -->
+  <section class="scr" data-step="1">
+    <h2 class="q">기본 정보를 입력해주세요</h2>
+    <div class="q-sub">담당 디자이너가 연락드릴 정보예요.</div>
+    <label class="fl">회사명</label><input class="ti" id="f_company" placeholder="회사명">
+    <label class="fl">담당자 성함</label><input class="ti" id="f_name" placeholder="홍길동">
+    <label class="fl">이메일 주소</label><input class="ti" id="f_email" placeholder="name@company.com">
+  </section>
+
+  <!-- 2 디자인 예시 -->
+  <section class="scr" data-step="2">
+    <h2 class="q">먼저, 예시로 감을 잡아보세요</h2>
+    <div class="q-sub">각 디자인이 어떤 키워드로 느껴지는지 참고해보세요. 끌리는 게 있다면 골라주세요 (없어도 괜찮아요).</div>
+    <div class="grid" id="refGrid"></div>
+    <div style="margin-top:1.3rem;">
+      <label class="fl">참고하고 싶은 레퍼런스가 따로 있나요? (선택)</label>
+      <input class="ti" id="f_refurl" placeholder="기업명 또는 URL을 붙여넣어 주세요">
+    </div>
+  </section>
+
+  <!-- 3 무드 지향 -->
+  <section class="scr" data-step="3">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+      <h2 class="q">어떤 무드에 마음이 가세요?</h2><span class="counter blue" id="proCnt">0/3</span>
+    </div>
+    <div class="q-sub">끌리는 무드 <b>3가지</b>를 골라주세요. 정답은 없으니 직관으로 편하게요 🙂</div>
+    <div class="chips" id="proChips"></div>
+  </section>
+
+  <!-- 4 무드 지양 -->
+  <section class="scr" data-step="4">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+      <h2 class="q">반대로, 피하고 싶은 느낌이 있다면?</h2><span class="counter red" id="conCnt">0개</span>
+    </div>
+    <div class="q-sub">있는 만큼만 편하게 골라주세요 <b>(1~3개)</b>. 앞서 고른 키워드는 선택할 수 없어요.</div>
+    <div class="chips" id="conChips"></div>
+  </section>
+
+  <!-- 5 화면 스타일(룩) -->
+  <section class="scr" data-step="5">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+      <h2 class="q">전체적인 화면 분위기는<br>어떤 쪽이 끌리세요?</h2><span class="counter blue" id="lookCnt">0/3</span>
+    </div>
+    <div class="q-sub">가까운 쪽을 골라주세요 <b>(1~3개)</b>. 확정은 아니에요 — 방향만 참고할게요 🙂</div>
+    <div class="grid" id="lookGrid"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+      <button class="special" id="lookTrust">자유롭게 맡길게요</button>
+      <button class="special" id="lookDirect">+ 설명 덧붙이기 (선택)</button>
+    </div>
+    <textarea class="ti" id="lookDirectTa" placeholder="고른 카드에 더하고 싶은 설명을 자유롭게 적어주세요..." style="display:none;margin-top:10px;"></textarea>
+  </section>
+
+  <!-- 6 컬러 -->
+  <section class="scr" data-step="6">
+    <h2 class="q">컬러는 어떤 느낌이 좋으세요?</h2>
+    <div class="q-sub"><b>배경색</b>과 <b>포인트색</b>을 골라주세요. 잘 모르겠으면 맡기셔도 돼요 🙂</div>
+    <div id="pvScreen" style="border:0.5px solid #e3e3e3;border-radius:10px;height:130px;padding:13px;display:flex;flex-direction:column;gap:9px;overflow:hidden;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:7px;"><div id="pvLogo" style="width:26px;height:14px;border-radius:4px;"></div><div style="flex:1;"></div><div style="width:34px;height:6px;border-radius:3px;background:rgba(130,130,130,.4);"></div><div style="width:34px;height:6px;border-radius:3px;background:rgba(130,130,130,.4);"></div></div>
+      <div id="pvHero" style="flex:1;border-radius:7px;display:flex;align-items:center;justify-content:center;"><div id="pvBtn" style="padding:6px 16px;border-radius:99px;font-size:11px;color:#fff;font-weight:600;">버튼</div></div>
+      <div style="display:flex;flex-direction:column;gap:5px;"><div style="width:90%;height:5px;border-radius:3px;background:rgba(130,130,130,.35);"></div><div style="width:70%;height:5px;border-radius:3px;background:rgba(130,130,130,.35);"></div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <div class="role active" data-r="bg"><div class="dot" id="dotbg"></div><div><div class="rn">배경색</div><div class="rh" id="hexbg">미선택</div></div></div>
+      <div class="role" data-r="point"><div class="dot" id="dotpoint"></div><div><div class="rn">포인트색</div><div class="rh" id="hexpoint">미선택</div></div></div>
+    </div>
+    <div style="font-size:12px;color:#999;margin-bottom:8px;"><span id="activeLabel">배경색</span>을 고르거나 아래에 직접 입력하세요</div>
+    <div id="swatches" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+    <div class="hexrow"><label>배경 #</label><input class="hexin" id="hexInBg" placeholder="FAFAFA" maxlength="7"></div>
+    <div class="hexrow"><label>포인트 #</label><input class="hexin" id="hexInPoint" placeholder="4F8EF7" maxlength="7"></div>
+    <label class="special" style="display:flex;align-items:center;gap:9px;margin-top:10px;">
+      <input type="checkbox" id="colTrust" style="width:15px;height:15px;"> 원하는 색이 명확하지 않아요 — 무드 기반으로 <b style="font-weight:600;">디자이너 제안</b> 받을게요
+    </label>
+  </section>
+
+  <!-- 7 중점 포커스 -->
+  <section class="scr" data-step="7">
+    <h2 class="q">어디에 좀 더 무게를 두고 싶으세요?</h2>
+    <div class="q-sub">끌리는 쪽으로 하나만 골라주세요 🙂</div>
+    <div id="focusOpts"></div>
+  </section>
+
+  <!-- 8 오픈 일정 -->
+  <section class="scr" data-step="8">
+    <h2 class="q">희망 오픈 일정은?</h2>
+    <div class="q-sub">콘텐츠 수령 후 약 한 달이 소요됩니다.</div>
+    <div id="schedOpts"></div>
+    <div id="schedExtra" style="display:none;margin-top:1.1rem;">
+      <div class="callout-red" id="schedCallout" style="display:none;">
+        ⚠️ <b>빠른 일정 안내</b><br>
+        · 채용홈페이지 제작은 <b>콘텐츠 접수 이후</b> 진행됩니다.<br>
+        · 콘텐츠 접수 순서대로 <b>선착순</b>으로 제작되며, 대기가 길어짐에 따라 일정이 지연될 수 있습니다.<br>
+        · 1차 시안은 <b>2주가량</b> 소요되며, 콘텐츠 양에 따라 달라질 수 있습니다.<br>
+        · 자세한 일정은 <b>담당 디자이너가 직접 연락</b>드릴 예정입니다.
+      </div>
+      <label class="fl">대략적인 희망 오픈 시기 <span style="color:#e24b4a;">*</span></label>
+      <input class="ti" id="f_schedDate" placeholder="예: 8월 말, 9월 초">
+    </div>
+  </section>
+
+  <!-- 9 문의 -->
+  <section class="scr" data-step="9">
+    <h2 class="q">마지막으로, 궁금하거나<br>전달할 내용이 있나요?</h2>
+    <div class="q-sub">없으시면 아래 '없어요'를 눌러주세요.</div>
+    <textarea class="ti" id="f_inquiry" placeholder="자유롭게 남겨주세요..."></textarea>
+    <button class="special" id="inqNone" style="width:100%;">없어요</button>
+  </section>
+
+  <!-- 10 확인 -->
+  <section class="scr" data-step="10">
+    <div class="done">
+      <div class="done-ic">✓</div>
+      <h2 class="q" style="text-align:center;">제출 전 확인해주세요</h2>
+      <div class="q-sub" style="text-align:center;">아래 내용으로 담당 디자이너에게 전달됩니다.</div>
+      <div class="summary" id="summary"></div>
+      <button class="copy-btn" id="copyBtn">📋 내용 복사하기</button>
+      <div class="save-note" id="copyMsg">결과를 보관하시려면 스크린샷을 찍거나, 위 <b>'내용 복사'</b>로 따로 저장해주세요.</div>
+      <div class="callout-info">
+        📎 <b>다음 단계 안내</b><br><br>
+        일정 및 콘텐츠 작성과 관련하여 <b>전담 디자이너가 영업일 기준 3일 이내</b>에 직접 연락드릴 예정입니다.<br><br>
+        더 구체적인 디자인 가이드나 레퍼런스 이미지가 있다면, 이후 전달드릴 <b>콘텐츠 작성 폼</b>에 첨부해주세요.
+      </div>
+      <div class="save-note">* 시안용 프로토타입이라 실제 전송은 되지 않아요.</div>
+    </div>
+  </section>
+
+  <div id="nav">
+    <button class="btn btn-prev" id="prevBtn" style="display:none;">이전</button>
+    <button class="btn btn-next" id="nextBtn">시작하기</button>
+  </div>
+</div>
+
+<!-- 자세히 보기 모달 -->
+<div class="modal-ov" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div style="clear:both;"></div>
+    <div id="modalThumb" style="margin-top:6px;"></div>
+    <div id="modalPills" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;"></div>
+    <div style="font-size:11.5px;color:#aaa;margin-top:12px;line-height:1.6;">실제 서베이에선 전체 화면 미리보기가 표시됩니다. (페이지 주소는 공개되지 않아요)</div>
+  </div>
+</div>
+
+<script>
+var A={company:'',name:'',email:'',refPick:null,refUrl:'',moodPro:new Set(),moodCon:new Set(),look:new Set(),lookTrust:false,lookDirect:'',color:{bg:null,point:null},colorTrust:false,focus:'',sched:'',schedDate:'',inquiry:''};
+var TOTAL=10, cur=0;
+var STEPLABEL=['시작','기본정보','디자인 예시','무드 (지향)','무드 (지양)','화면 분위기','컬러','중점 포커스','오픈 일정','문의','확인'];
+
+var KEYWORDS=['깔끔한','미니멀한','고급스러운','신뢰감 있는','전문적인','단정한','안정적인','견고한','따뜻한','부드러운','친근한','자연친화적인','캐주얼한','역동적인','트렌디한','미래적인','혁신적인','글로벌한','테크다운'];
+
+var REFS=[
+ {title:'샘플 1',url:'https://sample05.ninehire.site/',img:'images/sample1.jpg',pills:[['깔끔한','p-gray'],['단정한','p-blue'],['미니멀한','p-gray']]},
+ {title:'샘플 2',url:'https://sample06.ninehire.site/',img:'images/sample2.jpg',pills:[['미래적인','p-purple'],['역동적인','p-red'],['테크다운','p-gray']]},
+ {title:'샘플 3',url:'https://sample07.ninehire.site/',img:'images/sample3.jpg',pills:[['트렌디한','p-pink'],['전문적인','p-blue'],['캐주얼한','p-amber']]},
+ {title:'샘플 4',url:'https://sample08.ninehire.site/',img:'images/sample4.jpg',pills:[['깔끔한','p-gray'],['트렌디한','p-pink'],['혁신적인','p-purple']]},
+ {title:'샘플 5',url:'https://sample12.ninehire.site/',img:'images/sample5.jpg',pills:[['친근한','p-amber'],['부드러운','p-orange'],['캐주얼한','p-amber']]}
+];
+
+var LOOKS=[
+ {id:'darkbg',lab:'어두운 배경 중심',group:'bg'},{id:'lightbg',lab:'밝은 배경 중심',group:'bg'},
+ {id:'space',lab:'여백 강조 구성',group:'density'},{id:'dense',lab:'밀도감 있는 구성',group:'density'},
+ {id:'graphic',lab:'그래픽 중심',group:'visual'},{id:'photo',lab:'사진 중심',group:'visual'}
+];
+var LOOKGROUPS={bg:['darkbg','lightbg'],density:['space','dense'],visual:['graphic','photo']};
+
+var PALETTE=['#FFFFFF','#F5F3EF','#E7E2D8','#1A1A1A','#2C3137','#1A56DB','#3B82F6','#0EA5E9','#0F766E','#16A34A','#4D7C0F','#C8A04F','#92724E','#F59E0B','#F97316','#E11D48','#7C3AED','#DB2777'];
+var COLDEF={bg:'#F2F1EE',point:'#4f8ef7'};
+
+var FOCUS=['회사 비전·문화 강조','직무별 소개 상세히','복지·혜택 부각','임직원 인터뷰·후기','채용 프로세스 안내','전체적으로 균형있게'];
+var SCHED=['최대한 빨리 (1개월 이내)','2개월 이내','3개월 이상 여유 있어요','아직 미정'];
+
+function $(id){return document.getElementById(id);}
+function thumbHTML(kind){
+  if(kind==='dark') return '<div class="scrn" style="background:#17181c;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:52%;background:#f5f5f5;border-radius:3px;"></div><div style="height:4px;width:76%;background:#494d56;border-radius:2px;"></div><div style="height:8px;width:30%;background:#e24b4a;border-radius:99px;margin-top:2px;"></div></div>';
+  if(kind==='warm') return '<div class="scrn" style="background:#f7f3ec;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:48%;background:#cdbfa6;border-radius:3px;"></div><div style="height:18px;width:66%;background:#e8ddca;border-radius:5px;"></div><div style="height:8px;width:32%;background:#639922;border-radius:99px;"></div></div>';
+  if(kind==='tech') return '<div class="scrn" style="background:#0f1530;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:44%;background:#7c8cff;border-radius:3px;"></div><div style="height:16px;width:70%;background:#26306a;border-radius:5px;"></div><div style="height:8px;width:30%;background:#7c8cff;border-radius:99px;"></div></div>';
+  if(kind==='vivid') return '<div class="scrn" style="background:#fff;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="display:flex;gap:5px;"><div style="height:20px;width:42%;background:#db2777;border-radius:5px;"></div><div style="height:20px;flex:1;background:#7c3aed;border-radius:5px;"></div></div><div style="height:8px;width:55%;background:#f59e0b;border-radius:99px;"></div></div>';
+  return '<div class="scrn" style="background:#fff;border:0.5px solid #e5e5e5;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:50%;background:#1a1a1a;border-radius:3px;"></div><div style="height:4px;width:76%;background:#cfcfcf;border-radius:2px;"></div><div style="height:8px;width:30%;background:#4f8ef7;border-radius:99px;margin-top:2px;"></div></div>';
+}
+function lookThumb(id){
+  if(id==='darkbg') return '<div class="scrn" style="background:#16181c;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:52%;background:#f5f5f5;border-radius:3px;"></div><div style="height:4px;width:76%;background:#494d56;border-radius:2px;"></div><div style="height:4px;width:62%;background:#494d56;border-radius:2px;"></div></div>';
+  if(id==='lightbg') return '<div class="scrn" style="background:#fff;border:0.5px solid #e5e5e5;padding:11px;display:flex;flex-direction:column;gap:6px;justify-content:center;"><div style="height:6px;width:52%;background:#1a1a1a;border-radius:3px;"></div><div style="height:4px;width:76%;background:#cfcfcf;border-radius:2px;"></div><div style="height:4px;width:62%;background:#cfcfcf;border-radius:2px;"></div></div>';
+  if(id==='space') return '<div class="scrn" style="background:#fff;border:0.5px solid #eee;padding:10px;display:flex;flex-direction:column;justify-content:space-between;"><div style="display:flex;gap:7px;"><div style="width:34%;height:13px;background:#e3e3e0;border-radius:4px;"></div><div style="flex:1;height:13px;background:#e3e3e0;border-radius:4px;"></div></div><div style="display:flex;gap:7px;"><div style="flex:1;height:16px;background:#e3e3e0;border-radius:4px;"></div><div style="width:30%;height:16px;background:#e3e3e0;border-radius:4px;"></div></div></div>';
+  if(id==='dense') return '<div class="scrn" style="background:#fff;border:0.5px solid #eee;padding:7px;display:flex;flex-direction:column;gap:4px;"><div style="display:flex;gap:4px;"><div style="width:30%;height:9px;background:#e3e3e0;border-radius:2px;"></div><div style="flex:1;height:9px;background:#e3e3e0;border-radius:2px;"></div></div><div style="display:flex;gap:4px;"><div style="flex:1;height:11px;background:#e3e3e0;border-radius:2px;"></div><div style="width:28%;height:11px;background:#e3e3e0;border-radius:2px;"></div></div><div style="display:flex;gap:4px;"><div style="width:44%;height:9px;background:#e3e3e0;border-radius:2px;"></div><div style="flex:1;height:9px;background:#e3e3e0;border-radius:2px;"></div></div></div>';
+  if(id==='graphic') return '<div class="scrn" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 48 44" width="40" height="38" fill="none" stroke="#333" stroke-width="2.2" stroke-linejoin="round"><circle cx="13" cy="13" r="8.5"/><rect x="27" y="5" width="16" height="16" rx="2.5"/><polygon points="24,24 35,42 13,42"/></svg></div>';
+  return '<div class="scrn" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 48 48" width="38" height="38" fill="none" stroke="#333" stroke-width="2.2" stroke-linejoin="round"><rect x="6" y="10" width="36" height="28" rx="3"/><circle cx="17" cy="20" r="3"/><path d="M10 36 22 26 32 34 38 29"/></svg></div>';
+}
+
+function buildRefs(){
+  var g=$('refGrid'); g.innerHTML='';
+  REFS.forEach(function(r,i){
+    var c=document.createElement('div'); c.className='refc';
+    var pills=r.pills.map(function(p){return '<span class="pill '+p[1]+'">'+p[0]+'</span>';}).join('');
+    c.innerHTML='<div style="height:84px;border-radius:9px;overflow:hidden;border:0.5px solid #eee;background:#f3f3f1;"><img src="https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=600" style="width:100%;height:100%;object-fit:cover;object-position:top;" loading="lazy"></div><div style="font-size:12px;color:#999;margin:8px 0 6px;">'+r.title+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+pills+'</div><button class="detail-btn">자세히 보기</button>';
+    c.onclick=function(){ A.refPick=(A.refPick===i?null:i); [].forEach.call(g.children,function(x,j){x.classList.toggle('sel',A.refPick===j);}); };
+    c.querySelector('.detail-btn').onclick=function(e){ e.stopPropagation(); openModal(i); };
+    g.appendChild(c);
+  });
+}
+function openModal(i){
+  var r=REFS[i];
+  // 스크롤되는 이미지 박스: 로컬 풀페이지 캡처 우선, 없으면 자동 스크린샷(mshots) 폴백
+  var src=r.img?encodeURI(r.img):'';
+  var fallback='https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=1000';
+  $('modalThumb').innerHTML='<div style="max-height:62vh;overflow-y:auto;border-radius:10px;border:0.5px solid #eee;background:#f3f3f1;"><img src="'+(src||fallback)+'" onerror="this.onerror=null;this.src=\''+fallback+'\'" style="width:100%;display:block;"></div><div style="font-size:11px;color:#bbb;text-align:center;margin-top:5px;">↕ 스크롤하여 전체 화면을 볼 수 있어요</div>';
+  $('modalPills').innerHTML=r.pills.map(function(p){return '<span class="pill '+p[1]+'">'+p[0]+'</span>';}).join('');
+  $('modal').classList.add('on');
+}
+function buildMood(){
+  ['pro','con'].forEach(function(ph){
+    var wrap=$(ph+'Chips'); wrap.innerHTML='';
+    KEYWORDS.forEach(function(w){
+      var b=document.createElement('button'); b.className='chip'; b.dataset.w=w; b.textContent=w;
+      b.onclick=function(){ moodClick(ph,w); };
+      wrap.appendChild(b);
+    });
+  });
+}
+function moodClick(ph,w){
+  if(ph==='pro'){ if(A.moodPro.has(w))A.moodPro.delete(w); else if(A.moodPro.size<3)A.moodPro.add(w); }
+  else{ if(A.moodPro.has(w))return; if(A.moodCon.has(w))A.moodCon.delete(w); else if(A.moodCon.size<3)A.moodCon.add(w); }
+  renderMood(); updateNav();
+}
+function renderMood(){
+  [].forEach.call($('proChips').children,function(b){var w=b.dataset.w;b.className='chip';if(A.moodPro.has(w))b.classList.add('pro');else if(A.moodPro.size>=3)b.classList.add('dis');});
+  $('proCnt').textContent=A.moodPro.size+'/3';
+  [].forEach.call($('conChips').children,function(b){var w=b.dataset.w;b.className='chip';b.innerHTML=w;if(A.moodPro.has(w)){b.classList.add('lock');b.innerHTML=w+'<span class="tag">지향</span>';}else if(A.moodCon.has(w))b.classList.add('con');else if(A.moodCon.size>=3)b.classList.add('dis');});
+  $('conCnt').textContent=A.moodCon.size+'개';
+}
+function buildLook(){
+  var g=$('lookGrid'); g.innerHTML='';
+  LOOKS.forEach(function(l){
+    var c=document.createElement('div'); c.className='lc'; c.dataset.id=l.id; c.dataset.group=l.group;
+    c.innerHTML='<span class="chk">✓</span>'+lookThumb(l.id)+'<div class="lc-lab">'+l.lab+'</div>';
+    c.onclick=function(){ lookClick(l.id); };
+    g.appendChild(c);
+  });
+  $('lookTrust').onclick=function(){ A.lookTrust=!A.lookTrust; if(A.lookTrust){A.look.clear();} renderLook(); updateNav(); };
+  $('lookDirect').onclick=function(){ var ta=$('lookDirectTa'); var open=ta.style.display==='none'; ta.style.display=open?'block':'none'; $('lookDirect').classList.toggle('on',open); if(open)ta.focus(); };
+}
+function lookClick(id){
+  if(A.lookTrust){A.lookTrust=false;}
+  if(A.look.has(id))A.look.delete(id);
+  else{
+    var grp=LOOKS.find(function(l){return l.id===id;}).group;
+    var conflict=LOOKGROUPS[grp].some(function(o){return o!==id&&A.look.has(o);}); // 모순짝 동시선택 차단
+    if(conflict||A.look.size>=3)return;
+    A.look.add(id);
+  }
+  renderLook(); updateNav();
+}
+function renderLook(){
+  [].forEach.call($('lookGrid').children,function(c){
+    var id=c.dataset.id,g=c.dataset.group,dis=false;
+    if(A.lookTrust)dis=true;
+    else{ if(g){var others=LOOKGROUPS[g].filter(function(x){return x!==id;});if(others.some(function(o){return A.look.has(o);}))dis=true;} if(!A.look.has(id)&&A.look.size>=3)dis=true; }
+    c.classList.toggle('sel',A.look.has(id));
+    c.classList.toggle('dis',dis&&!A.look.has(id));
+  });
+  $('lookTrust').classList.toggle('on',A.lookTrust);
+  $('lookCnt').textContent=A.lookTrust?'맡김':(A.look.size+'/3');
+}
+function buildColor(){
+  var sw=$('swatches'); sw.innerHTML='';
+  PALETTE.forEach(function(c){
+    var b=document.createElement('button'); b.className='sw'; b.style.background=c; b.dataset.c=c;
+    b.onclick=function(){ setCol(c); };
+    sw.appendChild(b);
+  });
+  document.querySelectorAll('.role').forEach(function(el){ el.onclick=function(){ A._active=el.dataset.r; renderColor(); }; });
+  $('hexInBg').oninput=function(){ var v=norm($('hexInBg').value); if(v){A.color.bg=v;renderColor();} };
+  $('hexInPoint').oninput=function(){ var v=norm($('hexInPoint').value); if(v){A.color.point=v;renderColor();} };
+  $('colTrust').onchange=function(){ A.colorTrust=$('colTrust').checked; renderColor(); updateNav(); };
+  A._active='bg';
+}
+function norm(v){ v=v.trim(); if(v&&v[0]!=='#')v='#'+v; return /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(v)?v:null; }
+function setCol(c){ var a=A._active||'bg'; A.color[a]=c; if(a==='bg'&&!A.color.point)A._active='point'; renderColor(); updateNav(); }
+function renderColor(){
+  var dim=A.colorTrust;
+  document.querySelectorAll('.role').forEach(function(el){var r=el.dataset.r;el.classList.toggle('active',r===A._active&&!dim);$('dot'+r).style.background=A.color[r]||'transparent';$('hex'+r).textContent=A.color[r]?A.color[r].toUpperCase():'미선택';});
+  $('activeLabel').textContent={bg:'배경색',point:'포인트색'}[A._active||'bg'];
+  [].forEach.call($('swatches').children,function(b){b.classList.toggle('sel',b.dataset.c===A.color[A._active||'bg']);});
+  $('swatches').style.opacity=dim?'.3':'1'; $('swatches').style.pointerEvents=dim?'none':'auto';
+  $('hexInBg').disabled=dim; $('hexInPoint').disabled=dim;
+  if(document.activeElement!==$('hexInBg'))$('hexInBg').value=A.color.bg?A.color.bg.replace('#',''):'';
+  if(document.activeElement!==$('hexInPoint'))$('hexInPoint').value=A.color.point?A.color.point.replace('#',''):'';
+  var bg=A.color.bg||COLDEF.bg,point=A.color.point||COLDEF.point;
+  $('pvScreen').style.background=bg; $('pvHero').style.background='rgba(0,0,0,0.05)'; $('pvLogo').style.background=point; $('pvBtn').style.background=point;
+}
+function buildOpts(id,arr,key,cb){
+  var w=$(id); w.innerHTML='';
+  arr.forEach(function(o){
+    var b=document.createElement('button'); b.className='optbtn'; b.textContent=o;
+    b.onclick=function(){ A[key]=o; [].forEach.call(w.children,function(x){x.classList.toggle('sel',x.textContent===o);}); if(cb)cb(o); updateNav(); };
+    w.appendChild(b);
+  });
+}
+function onSched(o){
+  var undecided=(o===SCHED[3]); // '아직 미정'은 날짜 불필요
+  $('schedExtra').style.display=undecided?'none':'block';
+  if(undecided){ $('f_schedDate').value=''; A.schedDate=''; }
+  $('schedCallout').style.display=(o===SCHED[0])?'block':'none';
+  updateNav();
+}
+
+function valid(step){
+  if(step===0) return $('c1').checked&&$('c2').checked;
+  if(step===1) return $('f_company').value.trim()&&$('f_name').value.trim()&&$('f_email').value.trim();
+  if(step===3) return A.moodPro.size===3;
+  if(step===4) return A.moodCon.size>=1;
+  if(step===5) return A.look.size>=1||A.lookTrust||$('lookDirectTa').value.trim();
+  if(step===6) return A.colorTrust||(A.color.bg&&A.color.point);
+  if(step===7) return !!A.focus;
+  if(step===8) return !!A.sched && (A.sched===SCHED[3] || !!$('f_schedDate').value.trim());
+  return true;
+}
+function showScreen(n){
+  cur=n;
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.toggle('active',+s.dataset.step===n);});
+  $('prog').style.width=(n/TOTAL*100)+'%';
+  $('stag').textContent=STEPLABEL[n]||'';
+  $('prevBtn').style.display=(n>0)?'block':'none';
+  if(n===0)$('nextBtn').textContent='모두 확인했어요 — 인터뷰 시작';
+  else if(n===9)$('nextBtn').textContent='검토하기';
+  else if(n===TOTAL)$('nextBtn').textContent='처음으로';
+  else $('nextBtn').textContent='다음';
+  if(n===TOTAL) buildSummary();
+  updateNav(); window.scrollTo(0,0);
+}
+function updateNav(){ $('nextBtn').disabled=!valid(cur); }
+function next(){
+  if(cur===1){A.company=$('f_company').value.trim();A.name=$('f_name').value.trim();A.email=$('f_email').value.trim();}
+  if(cur===2){A.refUrl=$('f_refurl').value.trim();}
+  if(cur===5){A.lookDirect=$('lookDirectTa').value.trim();}
+  if(cur===8){A.schedDate=$('f_schedDate').value.trim();}
+  if(cur===9){A.inquiry=$('f_inquiry').value.trim();}
+  if(cur===TOTAL){ location.reload(); return; }
+  showScreen(cur+1);
+}
+function prev(){ if(cur>0) showScreen(cur-1); }
+
+function buildSummary(){
+  var refLabel=A.refPick!=null?REFS[A.refPick].title:(A.refUrl?A.refUrl:'없음/자유');
+  var look=A.lookTrust?'디자이너에게 맡김':(A.look.size?Array.from(A.look).map(function(id){return LOOKS.find(function(l){return l.id===id;}).lab;}).join(' · '):'-');
+  if(A.lookDirect) look+=(A.look.size?' / 설명: ':'설명: ')+A.lookDirect;
+  var col=A.colorTrust?'디자이너 제안':('배경 '+(A.color.bg||'-')+' · 포인트 '+(A.color.point||'-'));
+  var sc=(A.sched||'-')+(A.schedDate?(' / '+A.schedDate):'');
+  $('summary').innerHTML=
+   '<b>회사</b> '+(A.company||'-')+' / '+(A.name||'-')+' / '+(A.email||'-')+'<br>'+
+   '<b>예시·레퍼런스</b> '+refLabel+'<br>'+
+   '<b>무드 지향</b> '+(Array.from(A.moodPro).join(' · ')||'-')+'<br>'+
+   '<b>무드 지양</b> '+(Array.from(A.moodCon).join(' · ')||'-')+'<br>'+
+   '<b>화면 분위기</b> '+look+'<br>'+
+   '<b>컬러</b> '+col+'<br>'+
+   '<b>중점 포커스</b> '+(A.focus||'-')+'<br>'+
+   '<b>오픈 일정</b> '+sc+'<br>'+
+   '<b>문의</b> '+(A.inquiry||'없음');
+}
+function copySummary(){
+  var t=$('summary').innerText;
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function(){$('copyMsg').innerHTML='✓ 복사되었어요! 메모장 등에 붙여넣어 보관하세요.';}).catch(function(){window.prompt('아래 내용을 복사해 보관하세요:',t);});
+  else window.prompt('아래 내용을 복사해 보관하세요:',t);
+}
+
+buildRefs();buildMood();buildLook();buildColor();
+buildOpts('focusOpts',FOCUS,'focus');buildOpts('schedOpts',SCHED,'sched',onSched);
+renderMood();renderLook();renderColor();
+$('nextBtn').onclick=next; $('prevBtn').onclick=prev;
+['f_company','f_name','f_email'].forEach(function(id){$(id).oninput=updateNav;});
+['c1','c2'].forEach(function(id){$(id).onchange=updateNav;});
+$('lookDirectTa').oninput=updateNav;
+$('f_schedDate').oninput=updateNav;
+$('inqNone').onclick=function(){ $('f_inquiry').value=''; A.inquiry=''; showScreen(TOTAL); };
+$('copyBtn').onclick=copySummary;
+$('modalClose').onclick=function(){ $('modal').classList.remove('on'); };
+$('modal').onclick=function(e){ if(e.target===$('modal'))$('modal').classList.remove('on'); };
+showScreen(0);
+</script>
+</body>
+</html>
